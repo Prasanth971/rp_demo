@@ -1,5 +1,4 @@
-
-ocals {
+locals {
 
 lambda_arns = {
 
