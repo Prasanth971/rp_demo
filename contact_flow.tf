@@ -15,7 +15,7 @@ resource "aws_connect_contact_flow" "Terraform_Contact_Flow" {
   description  = "Test Contact Flow Description"
   type         = "CONTACT_FLOW"
   filename     = "flow01.json"
-  content = file("${path.module}/flow01.json")
+  content = file("${path.module}/flow01.json.tpl")
   content_hash = base64sha256(
     templatefile(
         "${path.module}/flow01.json.tpl",
