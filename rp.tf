@@ -1,4 +1,4 @@
-resource "aws_connect_routing_profile" "rp_one" {
+resource "aws_connect_routing_profile" "rp_two" {
   instance_id               = var.instance_id
   name                      = "rp_two"
   default_outbound_queue_id = var.default_outbound_queue_id
