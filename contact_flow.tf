@@ -1,6 +1,6 @@
-resource "aws_connect_contact_flow" "Terraform Contact Flow" {
+resource "aws_connect_contact_flow" "Terraform_Contact_Flow" {
   instance_id  = var.instance_id
-  name         = "Terraform Contact Flow"
+  name         = "Terraform_Contact_Flow"
   description  = "Test Contact Flow Description"
   type         = "CONTACT_FLOW"
   filename     = "flow01.json"
