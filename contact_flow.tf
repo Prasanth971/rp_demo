@@ -15,18 +15,15 @@ resource "aws_connect_contact_flow" "Terraform_Contact_Flow" {
   description  = "Test Contact Flow Description"
   type         = "CONTACT_FLOW"
   filename     = "flow01.json"
-  content_hash = base64sha256(templatefile("${path.module}/flow01.json.tpl"
-  
-  {
-
-lambda_arn = local.lambda_arns["dev"]
-
-}
-  
-  )
-
-  )
-  tags = {
+  content_hash = base64sha256(
+    templatefile(
+        "${path.module}/flow01.json.tpl",
+        {
+            lambda_arn = local.lambda_arns["dev"]
+            }
+            )
+            )
+tags = {
     "Name"        = "Terraform Contact Flow",
     "Application" = "Terraform",
     "Method"      = "Create"
