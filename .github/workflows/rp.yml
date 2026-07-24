@@ -1,24 +1,14 @@
 name: 'Terraform Automation'
 
 on:
-  workflow_dispatch:
-    inputs:
-      action:
-        description: 'Select the Terraform action to run'
-        required: true
-        default: 'plan'
-        type: choice
-        options:
-          - validate
-          - plan
-          - apply
+  workflow_dispatch: # A simple click-to-run button with no dropdown selections required
 
 permissions:
   contents: read
 
 jobs:
   terraform:
-    name: 'Terraform Action Execution'
+    name: 'Terraform Validate, Plan, and Apply'
     runs-on: ubuntu-latest
     
     defaults:
@@ -44,21 +34,18 @@ jobs:
       with:
         terraform_version: 1.11.0
 
-    # 4. Initialize Terraform (Required before running validate, plan, or apply)
+    # 4. Initialize Terraform (Required for all subsequent steps)
     - name: Terraform Init
       run: terraform init
 
-    # 5. Run Validate if selected in the dropdown
+    # 5. Automatically Validate code syntax
     - name: Terraform Validate
-      if: ${{ inputs.action == 'validate' }}
       run: terraform validate -no-color
 
-    # 6. Run Plan if selected in the dropdown
+    # 6. Automatically generate execution Plan
     - name: Terraform Plan
-      if: ${{ inputs.action == 'plan' }}
       run: terraform plan -no-color
 
-    # 7. Run Apply if selected in the dropdown
+    # 7. Automatically Apply changes to Amazon Connect
     - name: Terraform Apply
-      if: ${{ inputs.action == 'apply' }}
       run: terraform apply -auto-approve
