@@ -1,51 +1,60 @@
 name: 'Terraform Automation'
 
 on:
-  workflow_dispatch: # A simple click-to-run button with no dropdown selections required
+  workflow_dispatch:
+    inputs:
+      action:
+        description: 'Terraform action'
+        required: true
+        default: 'apply'
+        type: choice
+        options:
+          - apply
+          - destroy
 
 permissions:
   contents: read
 
 jobs:
   terraform:
-    name: 'Terraform Validate, Plan, and Apply'
+    name: 'Terraform Validate, Plan, and Execute'
     runs-on: ubuntu-latest
-    
+
     defaults:
       run:
         working-directory: ./
 
     steps:
-    # 1. Pull down the repository code
-    - name: Checkout Code
-      uses: actions/checkout@v4
+      - name: Checkout Code
+        uses: actions/checkout@v4
 
-    # 2. Authenticate to AWS using GitHub Secrets
-    - name: Configure AWS Credentials
-      uses: aws-actions/configure-aws-credentials@v4
-      with:
-        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-        aws-region: us-west-2
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: us-west-2
 
-    # 3. Set up the Terraform binary on the GitHub runner
-    - name: Setup Terraform
-      uses: hashicorp/setup-terraform@v3
-      with:
-        terraform_version: 1.11.0
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: 1.11.0
 
-    # 4. Initialize Terraform (Required for all subsequent steps)
-    - name: Terraform Init
-      run: terraform init
+      - name: Terraform Init
+        run: terraform init
 
-    # 5. Automatically Validate code syntax
-    - name: Terraform Validate
-      run: terraform validate -no-color
+      - name: Terraform Validate
+        if: github.event.inputs.action == 'apply'
+        run: terraform validate -no-color
 
-    # 6. Automatically generate execution Plan
-    - name: Terraform Plan
-      run: terraform plan -no-color
+      - name: Terraform Plan
+        if: github.event.inputs.action == 'apply'
+        run: terraform plan -no-color
 
-    # 7. Automatically Apply changes to Amazon Connect
-    - name: Terraform Apply
-      run: terraform apply -auto-approve
+      - name: Terraform Apply
+        if: github.event.inputs.action == 'apply'
+        run: terraform apply -auto-approve
+
+      - name: Terraform Destroy
+        if: github.event.inputs.action == 'destroy'
+        run: terraform destroy -auto-approve
