@@ -11,7 +11,7 @@ dev = "arn:aws:connect:us-west-2:367115304840:instance/dba85ea8-af3e-40d8-ae9c-5
 
 resource "aws_connect_contact_flow" "Terraform_Contact_Flow" {
   instance_id  = var.instance_id
-  name         = "Terraform_Contact_Flow"
+  name         = "new_contact_flow"
   description  = "Test Contact Flow Description"
   type         = "CONTACT_FLOW"
   content = templatefile("${path.module}/flow01.json.tftpl", {
